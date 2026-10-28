@@ -4,7 +4,7 @@
 
 Без сервера и базы данных: всё работает в браузере, данные хранятся в `localStorage`.
 
-**Демо:** _ссылка на GitHub Pages появится после публикации_
+**Демо:** https://bazookaorangutan.github.io/balance-studio/
 
 ## Модули
 
