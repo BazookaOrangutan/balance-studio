@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Balance & Progression Studio</title>
+  <meta name="description" content="Инструмент геймдизайнера: импорт статов, TTK, кривые прогрессии, проверка лута.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%234f6bed'/><path d='M8 22 14 14l4 4 6-9' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/tabs.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand__logo" aria-hidden="true"></span>
+      <div>
+        <h1 class="brand__title">Balance &amp; Progression Studio</h1>
+        <p class="brand__subtitle">баланс статов, TTK, прогрессия и лут</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="save-status" id="save-status" aria-live="polite"></span>
+      <button class="btn btn--ghost" id="btn-export-project" title="Экспорт проекта (Ctrl+E)">Экспорт проекта</button>
+      <button class="btn btn--ghost btn--icon" id="btn-theme" title="Тема оформления"></button>
+      <button class="btn btn--ghost btn--icon" id="btn-help" title="Горячие клавиши (?)">?</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main class="app-main" id="panels"></main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <dialog class="dialog" id="help-dialog">
+    <h2>Горячие клавиши</h2>
+    <dl class="hotkeys">
+      <dt><kbd>Alt</kbd> + <kbd>1</kbd>…<kbd>5</kbd></dt><dd>переключить вкладку</dd>
+      <dt><kbd>Ctrl</kbd> + <kbd>S</kbd></dt><dd>сохранить сейчас (автосохранение и так включено)</dd>
+      <dt><kbd>Ctrl</kbd> + <kbd>E</kbd></dt><dd>экспорт всего проекта в JSON</dd>
+      <dt><kbd>Alt</kbd> + <kbd>N</kbd></dt><dd>добавить строку (вкладки «Таблица» и «Лут»)</dd>
+      <dt><kbd>?</kbd></dt><dd>эта справка</dd>
+    </dl>
+    <form method="dialog"><button class="btn">Закрыть</button></form>
+  </dialog>
+</body>
+</html>

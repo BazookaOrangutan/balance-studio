@@ -1,0 +1,14 @@
+{
+  "name": "balance-progression-studio",
+  "version": "1.0.0",
+  "description": "Static web tool for game balance: stats import, TTK, progression curves, loot checks.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/dev-server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
