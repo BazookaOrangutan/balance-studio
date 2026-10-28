@@ -17,8 +17,9 @@ import { validateDataset, issuesByCell, parseNumber } from '../core/validate.js'
  * @param {{title:string, className?:string, cell:(row, index, ctx) => Node|string}[]} [options.extraColumns]
  * @param {(index, ctx) => 'error'|'warn'|null} [options.rowStatus]
  * @param {() => object} [options.newRow]
+ * @param {(row) => Object<string, string>} [options.placeholders]  grey hint shown in empty cells, by column
  */
-export function createDataGrid({ type, ownerId, analyze = () => null, extraColumns = [], rowStatus = () => null, newRow }) {
+export function createDataGrid({ type, ownerId, analyze = () => null, extraColumns = [], rowStatus = () => null, newRow, placeholders = () => ({}) }) {
   const schema = SCHEMAS[type];
   const element = h('div', { class: 'table-wrap' });
   let sort = { column: null, dir: 1 };
@@ -120,7 +121,9 @@ export function createDataGrid({ type, ownerId, analyze = () => null, extraColum
     const needle = filter.trim().toLowerCase();
 
     for (const { index, tr, inputs, extras } of rowNodes) {
+      const hints = placeholders(lastValidation.rows[index]);
       for (const column of columns) {
+        inputs[column].placeholder = hints[column] ?? '';
         const messages = cellIssues.get(`${index}:${column}`);
         inputs[column].classList.toggle('grid-input--invalid', Boolean(messages));
         inputs[column].title = messages ? messages.join('; ') : '';

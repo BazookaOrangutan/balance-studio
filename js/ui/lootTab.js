@@ -3,7 +3,7 @@
 import { h, clear, fmt, badge, toast } from '../core/dom.js';
 import { getState, update } from '../core/store.js';
 import { downloadCSV, downloadJSON } from '../core/io.js';
-import { checkLootTables, expectedPerOpens, normalizeTable, SUM_TOLERANCE } from '../domain/loot.js';
+import { checkLootTables, expectedPerOpens, normalizeTable, effectiveQty, SUM_TOLERANCE } from '../domain/loot.js';
 import { createDataGrid } from './dataGrid.js';
 
 const OPENS = 100;
@@ -30,6 +30,10 @@ export function createLootTab() {
       },
     }],
     newRow: (rows) => ({ table: rows[rows.length - 1]?.table ?? 'new_table', item: '', chance: 0, min_qty: 1, max_qty: 1 }),
+    placeholders: (row) => {
+      const qty = effectiveQty(row);
+      return { min_qty: String(qty.min), max_qty: String(qty.max) };
+    },
   });
 
   function normalize(table) {
@@ -124,6 +128,7 @@ export function createLootTab() {
           ),
           grid.element,
           h('p', { class: 'hint' }, 'Жёлтые строки — в таблице с неверной суммой, красные — с ошибкой в самой строке.'),
+          h('p', { class: 'hint' }, 'min_qty и max_qty можно не заполнять: серое значение — то, что используется в расчёте. Если пусты оба — выпадает 1 шт., если одно — берётся значение соседнего.'),
         ),
       ));
     },

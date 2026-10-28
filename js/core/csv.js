@@ -75,7 +75,9 @@ export function parseRecords(text, delimiter = detectDelimiter(text)) {
 
 /**
  * Parses CSV with a header row into objects.
- * Returns { columns, rows, structural } where structural lists rows whose field count differs from the header.
+ * Returns { columns, rows, structural } where structural lists rows with more fields than the header.
+ * Short rows are padded with '': trailing optional values may be omitted, and a missing
+ * required value is reported by validation as an empty cell.
  */
 export function parseCSV(text, delimiter = detectDelimiter(text)) {
   const records = parseRecords(text, delimiter).filter((r) => r.some((cell) => cell.trim() !== ''));
@@ -88,8 +90,8 @@ export function parseCSV(text, delimiter = detectDelimiter(text)) {
 
   const structural = [];
   const rows = records.slice(1).map((record, index) => {
-    if (record.length !== columns.length) {
-      structural.push({ index, column: null, message: `ожидалось полей: ${columns.length}, получено: ${record.length}` });
+    if (record.length > columns.length) {
+      structural.push({ index, column: null, message: `лишние значения: колонок ${columns.length}, а полей ${record.length} — лишние будут отброшены` });
     }
     return Object.fromEntries(columns.map((column, c) => [column, record[c] ?? '']));
   });

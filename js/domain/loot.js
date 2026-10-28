@@ -26,12 +26,22 @@ export function checkLootTables(rows, tolerance = SUM_TOLERANCE) {
   return { groups: result, ok: result.every((g) => g.ok) };
 }
 
-/** Average quantity of one drop: (min + max) / 2, or 1 if no quantity columns. */
-export function averageQty(row) {
+export const DEFAULT_QTY = 1;
+
+/**
+ * Quantity range used in calculations. An empty bound takes the other bound's value;
+ * if both are empty, one item drops.
+ */
+export function effectiveQty(row) {
   const min = hasNumber(row, 'min_qty') ? row.min_qty : null;
   const max = hasNumber(row, 'max_qty') ? row.max_qty : null;
-  if (min == null && max == null) return 1;
-  return ((min ?? max) + (max ?? min)) / 2;
+  return { min: min ?? max ?? DEFAULT_QTY, max: max ?? min ?? DEFAULT_QTY };
+}
+
+/** Average quantity of one drop: (min + max) / 2. */
+export function averageQty(row) {
+  const { min, max } = effectiveQty(row);
+  return (min + max) / 2;
 }
 
 /** Expected amount of the item per `opens` rolls. */

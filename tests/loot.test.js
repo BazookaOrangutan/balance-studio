@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkLootTables, normalizeTable, expectedPerOpens } from '../js/domain/loot.js';
+import { checkLootTables, normalizeTable, expectedPerOpens, effectiveQty } from '../js/domain/loot.js';
 
 const rows = [
   { table: 'goblin', item: 'Ничего', chance: 40 },
@@ -38,6 +38,14 @@ test('normalize scales a table to exactly 100', () => {
 
   const thirds = normalizeTable([1, 1, 1].map((c, i) => ({ table: 't', item: i, chance: c })), 't');
   assert.equal(thirds.reduce((s, r) => s + r.chance, 0), 100);
+});
+
+test('empty quantity: both empty → 1, one empty → copies the other', () => {
+  assert.deepEqual(effectiveQty({ chance: 5 }), { min: 1, max: 1 });
+  assert.deepEqual(effectiveQty({ chance: 5, min_qty: '', max_qty: '' }), { min: 1, max: 1 });
+  assert.deepEqual(effectiveQty({ chance: 5, min_qty: 3, max_qty: '' }), { min: 3, max: 3 });
+  assert.deepEqual(effectiveQty({ chance: 5, min_qty: '', max_qty: 8 }), { min: 8, max: 8 });
+  assert.deepEqual(effectiveQty({ chance: 5, min_qty: 0, max_qty: 0 }), { min: 0, max: 0 });
 });
 
 test('expected amount per 100 opens', () => {

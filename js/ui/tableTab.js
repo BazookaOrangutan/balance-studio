@@ -44,6 +44,10 @@ export function createTableTab() {
       },
     ],
     newRow: (rows) => ({ id: nextId(rows), name: 'Новый юнит', hp: 100, attack: 20, defense: 5, cost: 100 }),
+    placeholders: () => {
+      const c = getState().settings.combat;
+      return { crit_chance: String(c.critChance), crit_mult: String(c.critMult), attack_speed: String(c.attackSpeed) };
+    },
   });
 
   grid.element.addEventListener('grid:refresh', (event) => {
@@ -100,6 +104,7 @@ export function createTableTab() {
           h('div', { style: 'margin-bottom:10px' }, summary),
           grid.element,
           h('p', { class: 'hint' }, 'Изменения сохраняются автоматически. Клик по заголовку — сортировка.'),
+          h('p', { class: 'hint' }, 'crit_chance, crit_mult и attack_speed можно не заполнять: серое значение в пустой ячейке — значение по умолчанию из вкладки TTK, оно и используется в расчётах.'),
         ),
         h('div', { class: 'card' }, auditInfo),
       ));

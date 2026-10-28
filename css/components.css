@@ -86,6 +86,7 @@
   font: inherit;
 }
 .grid-input:hover { border-color: var(--border); }
+.grid-input::placeholder { color: var(--text-muted); opacity: .55; font-style: italic; }
 .grid-input:focus { border-color: var(--accent); background: var(--surface); outline: none; }
 .grid-input--num { text-align: right; min-width: 64px; }
 .grid-input--invalid { border-color: var(--error); color: var(--error); }

@@ -57,9 +57,25 @@ test('units_with_errors.csv: every planted error is found', () => {
   assert.ok(messages.includes('5:id'), 'duplicate id');
   assert.ok(messages.includes('6:defense'), 'negative defense');
   assert.ok(messages.includes('7:name'), 'empty name');
-  assert.ok(messages.includes('9:null'), 'missing field');
+  assert.ok(messages.includes('9:cost'), 'short row: required cost is missing');
   assert.ok(messages.includes('11:hp'), 'hp = 0');
   assert.ok(!invalid.has(7), '24,5 is a valid number');
+});
+
+test('rows may omit trailing optional values', () => {
+  const text = 'id,name,hp,attack,defense,cost,crit_chance,crit_mult\n1,Мечник,120,25,10,100\n5,Маг,70,45,3,150,0.2,1.5\n';
+  const { columns, rows, structural } = parseCSV(text);
+  assert.equal(structural.length, 0);
+  const result = validateDataset('units', columns, rows, structural);
+  assert.equal(result.ok, true);
+  assert.equal(result.rows[0].crit_chance, '');
+  assert.equal(result.rows[1].crit_chance, 0.2);
+});
+
+test('extra values beyond the header are reported', () => {
+  const { structural } = parseCSV('id,name\n1,a,lost\n');
+  assert.equal(structural.length, 1);
+  assert.equal(structural[0].index, 0);
 });
 
 test('missing required columns are fatal', () => {
