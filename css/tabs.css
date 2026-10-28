@@ -67,7 +67,7 @@
 .calc-steps .value { font-weight: 650; }
 
 .matrix td { text-align: center; cursor: pointer; }
-.matrix td.matrix__self { color: var(--text-muted); cursor: default; }
+.matrix td.matrix__mirror { outline: 1px dashed var(--text-muted); outline-offset: -4px; }
 .matrix td.matrix__selected { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 .versus { display: flex; align-items: end; gap: 8px; }

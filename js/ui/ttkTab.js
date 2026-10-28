@@ -142,8 +142,8 @@ export function createTtkTab() {
     const settings = getState().settings.combat;
     const { attacker, target } = selection(list);
 
-    const cells = list.map((a) => list.map((t) => (a === t ? null : computeTTK(a, t, settings).ttkExpected)));
-    const finite = cells.flat().filter((v) => v != null && Number.isFinite(v));
+    const cells = list.map((a) => list.map((t) => computeTTK(a, t, settings).ttkExpected));
+    const finite = cells.flat().filter(Number.isFinite);
     const min = Math.min(...finite);
     const max = Math.max(...finite);
 
@@ -155,7 +155,7 @@ export function createTtkTab() {
 
     const exportMatrix = () => {
       const columns = ['attacker', ...list.map((u) => u.name)];
-      const rows = list.map((a, i) => ({ attacker: a.name, ...Object.fromEntries(list.map((t, j) => [t.name, cells[i][j] == null ? '' : cells[i][j]])) }));
+      const rows = list.map((a, i) => ({ attacker: a.name, ...Object.fromEntries(list.map((t, j) => [t.name, cells[i][j]])) }));
       downloadCSV('ttk_matrix', columns, rows);
     };
 
@@ -164,19 +164,19 @@ export function createTtkTab() {
         h('h2', {}, 'Матрица TTK, с'),
         h('button', { class: 'btn btn--ghost btn--small', onClick: exportMatrix }, 'Экспорт CSV'),
       ),
-      h('p', { class: 'muted' }, 'Строка — атакующий, колонка — цель. Зелёный — убивает быстро, красный — долго. Клик по ячейке выбирает пару.'),
+      h('p', { class: 'muted' }, 'Строка — атакующий, колонка — цель. Зелёный — убивает быстро, красный — долго. Клик по ячейке выбирает пару. Пунктирная диагональ — зеркальный бой: юнит против такого же юнита.'),
       h('div', { class: 'table-wrap' }, h('table', { class: 'table matrix' },
         h('thead', {}, h('tr', {}, h('th', {}, 'атакует ↓ / цель →'), list.map((u) => h('th', {}, u.name)))),
         h('tbody', {}, list.map((a, i) => h('tr', {},
           h('th', {}, a.name),
           list.map((t, j) => {
             const v = cells[i][j];
-            if (v == null) return h('td', { class: 'matrix__self' }, '—');
+            const mirror = a === t;
             const selected = a === attacker && t === target;
             return h('td', {
-              class: selected ? 'matrix__selected' : '',
+              class: [mirror ? 'matrix__mirror' : '', selected ? 'matrix__selected' : ''].join(' ').trim(),
               style: `background:${color(v)}`,
-              title: `${a.name} → ${t.name}`,
+              title: mirror ? `${a.name} против такого же юнита` : `${a.name} → ${t.name}`,
               onClick: () => {
                 setPair(a.id, t.id);
               },
@@ -196,6 +196,9 @@ export function createTtkTab() {
         matrixCard,
         h('div', { class: 'card' },
           h('h2', {}, 'Почему такая формула'),
+          h('p', { class: 'muted' },
+            'Обозначения: A — атака атакующего, D — защита цели, HP — здоровье цели, k — минимальная доля урона, M — общий множитель урона, ',
+            'crit — шанс крита (0…1), critMult — во сколько раз крит сильнее обычного удара, attackSpeed — атак в секунду.'),
           h('p', {}, h('code', {}, 'урон = max(A − D, A × k) × M'), ' — вычитание защиты легко читать: каждая единица защиты блокирует единицу урона, дизайнер сразу видит эффект изменения стата.'),
           h('p', {}, 'Нижняя граница ', h('code', {}, 'A × k'), ' (по умолчанию 10% атаки) не даёт урону упасть до нуля, когда защита цели выше атаки — иначе слабый юнит никогда не убьёт танка и TTK станет бесконечным.'),
           h('p', {}, 'Криты учитываются через ожидаемое значение: ', h('code', {}, '1 + шанс × (множитель − 1)'), '. Это среднее по большому числу ударов; симуляция ниже расчёта проверяет, что оценка близка к реальности.'),

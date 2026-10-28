@@ -171,7 +171,7 @@ export function createImportTab() {
     const state = getState();
     clear(exportCard).append(
       h('h2', {}, 'Экспорт'),
-      DATASET_TYPES.map((t) => h('div', { class: 'row', style: 'margin-bottom:10px' },
+      ...DATASET_TYPES.map((t) => h('div', { class: 'row', style: 'margin-bottom:10px' },
         h('span', { style: 'min-width:90px' }, `${SCHEMAS[t].label} (${state[t].rows.length})`),
         h('button', { class: 'btn btn--ghost btn--small', onClick: () => downloadCSV(t, state[t].columns, state[t].rows) }, 'CSV'),
         h('button', { class: 'btn btn--ghost btn--small', onClick: () => downloadJSON(t, state[t].rows) }, 'JSON'),
