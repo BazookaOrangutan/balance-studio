@@ -1,0 +1,13 @@
+table,item,chance,min_qty,max_qty
+goblin,Ничего,40,0,0
+goblin,Золото,45,5,15
+goblin,Зелье лечения,12,1,1
+goblin,Ржавый кинжал,3,1,1
+skeleton,Ничего,50,0,0
+skeleton,Кости,35,1,3
+skeleton,Золото,12.5,3,8
+skeleton,Старый щит,2.5,1,1
+boss_chest,Золото,50,100,200
+boss_chest,Редкий меч,30,1,1
+boss_chest,Эпический щит,15,1,1
+boss_chest,Легендарное кольцо,5,1,1
